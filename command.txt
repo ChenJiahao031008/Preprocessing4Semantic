@@ -1,0 +1,1 @@
+../app/main /home/demo/Data/KITTI/data_semantics/training
