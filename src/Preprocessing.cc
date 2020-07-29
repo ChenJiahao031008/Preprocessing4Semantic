@@ -15,6 +15,19 @@ Preprocessing::Preprocessing(const string &strPathToSequence):mstrPathToSequence
 {
 }
 
+void Preprocessing::LabelmeTool()
+{
+	string folderPath4RGB = mstrPathToSequence + "/image_2";
+	string folderPath4Sem = mstrPathToSequence + "/semantic";
+	string command1st, command2nd, command3rd;
+    command1st = "mkdir -p " + folderPath4RGB;  
+    system(command1st.c_str());
+    command2nd = "mkdir -p " + folderPath4Sem;  
+    system(command2nd.c_str());
+    command3rd = "python2 ../src/python/LabelmeTool.py -d" + mstrPathToSequence;
+    system(command3rd.c_str());
+}
+
 int Preprocessing::LoadImg()
 {
 	string strPatternRGB = mstrPathToSequence + "/image_2/*.png";
@@ -201,6 +214,18 @@ void Preprocessing::IlluminationAndContrast(const double &percentage)
 {
 	cout << "[INFO] Number Of Pictures Corrected For IlluminationAndContrast is :" ;
 	Random(percentage);
+	std::vector<double> vdAlpha;
+	std::vector<int> viBeta;
+
+	srand((int)time(0));
+	for(unsigned int i=0; i<mvichangeIdx.size(); ++i){
+		int randomNum = ( rand()%(int)(0.3*10+0.3*10) -0.3*10);
+		double alpha = randomNum/10.0 + 1.0;
+		vdAlpha.push_back(alpha);
+		int beta = ( rand()%70 );
+		viBeta.push_back(beta);
+	}
+
 
 	for(int i1=0; i1<(int)mvichangeIdx.size(); ++i1)
 	{
@@ -210,17 +235,8 @@ void Preprocessing::IlluminationAndContrast(const double &percentage)
 		cv::Mat srcSem = mvmatSemantics[i2].clone();
 		cv::Mat tmpImage = cv::Mat::zeros( srcRGB.size(), srcRGB.type() );
 		
-		double alpha=1.0; /**< 控制对比度 */
-		int beta=0;  /**< 控制亮度 */
-		srand((int)time(0));
-		for(unsigned int i=0; i<2; ++i){
-			if (i==0){
-				int randomNum = ( rand()%30 );
-				alpha = randomNum/10.0;
-			}else{
-				beta = ( rand()%70 );
-			}
-		}
+		double alpha = vdAlpha[i1]; /**< 控制对比度 */
+		int beta = viBeta[i1];  /**< 控制亮度 */
 
 		if (i1%3==0){
 			strPrefix = "IC_";
@@ -231,6 +247,9 @@ void Preprocessing::IlluminationAndContrast(const double &percentage)
 			alpha=1.0;
         	strPrefix = "C_";
 		}
+
+        //cout << "alpha :" << alpha << endl;
+        //cout << "beta :" << beta << endl;
 
 		for( int y = 0; y < srcRGB.rows; y++ )
         	for( int x = 0; x < srcRGB.cols; x++ )

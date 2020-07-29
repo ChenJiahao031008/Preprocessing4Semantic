@@ -10,6 +10,8 @@ public:
 	Preprocessing(const string &strPathToSequence);
 	//~Preprocessing();
 
+	void LabelmeTool();
+
 	int LoadImg();
 	
 	void Random(const double &percentage);
