@@ -1,9 +1,11 @@
 # Preprocessing4Semantic
-**Linux-cpp** repository : Images Preprocessing for Semantic Segmentation
+**Linux-cpp-python** repository : Images Preprocessing for Semantic Segmentation
 
 ### 1. Library Dependency
 
 at least: **opencv 2.4.3**  or **opencv 3.0.x**
+
+python : opencv-python, labelme(option) ...
 
 ### 2. Preparatory Work
 
@@ -34,6 +36,12 @@ mkdir build && cd build && cmake .. && make -j4
 ```
 
 ​	and new images in the NewRGB and NewSem folder.
+
+​	At last , cp NewRGB -> image_2 ; NewSem->semantic and
+
+```
+python build_dataset.py --datasetPath <new-dataset-path> --outputPath <output-dataset> 
+```
 
 ​	prefix for new images and semantics:
 
